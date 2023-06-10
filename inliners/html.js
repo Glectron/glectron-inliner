@@ -2,6 +2,10 @@ import fs from "fs";
 import path from "path";
 
 import parser from "node-html-parser";
+import minifyHtml from "@minify-html/node";
+import { minify as jsMinify } from "terser";
+import postcss from "postcss";
+import cssnanoPlugin from "cssnano";
 import mime from "mime-types";
 
 import { isURL } from "../util.js";
@@ -22,29 +26,37 @@ function replaceWithDataUrls(dir, el, selector, attribute) {
     })
 }
 
-export default async function(content, dir) {
+export default async function(content, dir, options) {
     const el = parser.parse(content);
-    el.querySelectorAll("script[src]").forEach((v) => {
+    const processors = [];
+    el.querySelectorAll("script[src]").forEach(async (v) => {
         const src = v.getAttribute("src");
         if (!isURL(src)) {
             const assetPath = path.join(dir, src);
             if (fs.existsSync(assetPath)) {
-                const content = fs.readFileSync(assetPath, "utf-8").toString();
+                let content = fs.readFileSync(assetPath, "utf-8").toString();
+                if (options.minifyJs) {
+                    let result = jsMinify(content, { sourceMap: options.sourceMap || false });
+                    processors.push(result);
+                    content = (await result).code;
+                }
                 v.set_content(content);
                 v.removeAttribute("src");
             }
         }
     });
-    const cssProcessors = [];
     el.querySelectorAll("link[href]").forEach(async (v) => {
         const href = v.getAttribute("href");
         if (!isURL(href)) {
             const assetPath = path.join(dir, href);
             if (fs.existsSync(assetPath)) {
                 const content = fs.readFileSync(assetPath, "utf-8");
-                const result = doInline(content, "css", path.dirname(assetPath));
-                cssProcessors.push(result);
-                v.set_content(await result);
+                let result = doInline(content, "css", path.dirname(assetPath));
+                if (options.minifyCss) {
+                    result = result.then((val) => postcss([cssnanoPlugin]).process(val, { from: undefined }));
+                }
+                processors.push(result);
+                v.set_content((await result).css);
                 v.tagName = "style";
                 v.removeAttribute("rel");
                 v.removeAttribute("href");
@@ -53,6 +65,10 @@ export default async function(content, dir) {
     });
     replaceWithDataUrls(dir, el, "img[src]", "src");
     replaceWithDataUrls(dir, el, "audio[src]", "src");
-    await Promise.allSettled(cssProcessors);
-    return el.toString();
+    await Promise.allSettled(processors);
+    if (options.minifyHtml) {
+        return minifyHtml.minify(Buffer.from(el.toString()), {});
+    } else {
+        return el.toString();
+    }
 }

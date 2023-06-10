@@ -10,9 +10,16 @@ const argv = minimist(process.argv.slice(2));
 const targetFile = argv._[0];
 const outputFile = argv.o || argv.output;
 const watchDir = argv.w || argv.watch;
+const minifyJs = (argv.j || argv.minifyjs) !== undefined;
+const minifyCss = (argv.c || argv.minifycss) !== undefined;
+const minifyHtml = (argv.h || argv.minifyhtml) !== undefined;
 
 async function runInline() {
-    const result = await inline(path.resolve(process.cwd(), targetFile));
+    const result = await inline(path.resolve(process.cwd(), targetFile), {
+        minifyHtml,
+        minifyJs,
+        minifyCss
+    });
     if (outputFile) {
         fs.writeFileSync(path.resolve(process.cwd(), outputFile), result, "utf-8");
     } else {
