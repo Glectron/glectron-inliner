@@ -12,12 +12,10 @@
     "glectron-inliner": "./cli.js"
   },
   "dependencies": {
-    "@minify-html/node": "^0.11.1",
-    "css": "^3.0.0",
     "cssnano": "^6.0.1",
+    "glectron-asset-walker": "https://github.com/Glectron/glectron-asset-walker#d09a82e8c82fa4b10c495df490fa22a2bba673f7",
     "mime-types": "^2.1.35",
     "minimist": "^1.2.8",
-    "node-html-parser": "^6.1.5",
     "node-watch": "^0.7.3",
     "postcss": "^8.4.24",
     "terser": "^5.17.7"

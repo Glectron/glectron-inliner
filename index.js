@@ -1,18 +1,11 @@
-import fs from "fs";
-import path from "path";
+import walk from "glectron-asset-walker";
 
-const __dirname = path.dirname(import.meta.url);
-
-export async function doInline(content, ext, dir, options) {
-    const inliner = await import(path.join(__dirname, "inliners", `${ext}.js`));
-    return inliner.default(content, dir, options);
-}
+import htmlWalker from "./inliners/html.js";
 
 async function inline(file, options) {
-    const content = fs.readFileSync(file, "utf-8");
-    const ext = path.extname(file).substring(1);
-    const dir = path.dirname(file);
-    return doInline(content, ext, dir, options);
+    return walk(file, [
+        ["html", htmlWalker(options)]
+    ], options)
 }
 
 export default inline;
