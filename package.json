@@ -1,0 +1,20 @@
+{
+  "name": "glectron-inliner",
+  "version": "1.0.0",
+  "description": "A HTML packer that inlines all used assets",
+  "main": "index.js",
+  "type": "module",
+  "repository": "https://github.com/Glectron/glectron-inliner.git",
+  "author": "YUCLing <luotianyi@luotianyi.me>",
+  "license": "MIT",
+  "private": false,
+  "bin": {
+    "glectron-inliner": "./cli.js"
+  },
+  "dependencies": {
+    "css": "^3.0.0",
+    "mime-types": "^2.1.35",
+    "minimist": "^1.2.8",
+    "node-html-parser": "^6.1.5"
+  }
+}
