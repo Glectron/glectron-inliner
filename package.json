@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "cssnano": "^6.0.1",
-    "glectron-asset-walker": "https://github.com/Glectron/glectron-asset-walker#d09a82e8c82fa4b10c495df490fa22a2bba673f7",
+    "glectron-asset-walker": "https://github.com/Glectron/glectron-asset-walker#0ec9894e3eae3a3439700ef4fd866663774b92d5",
     "mime-types": "^2.1.35",
     "minimist": "^1.2.8",
     "node-watch": "^0.7.3",

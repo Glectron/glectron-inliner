@@ -9,33 +9,33 @@ import mime from "mime-types";
 
 import cssWalker from "./css.js";
 
-async function dataUrlWalker(el, attr, asset) {
+async function dataUrlWalker({element, attribute, asset}) {
     const data = fs.readFileSync(asset).toString("base64");
     const type = mime.lookup(path.extname(asset));
     const uri = `data:${type};base64,${data}`;
-    el.setAttribute(attr, uri);
+    element.setAttribute(attribute, uri);
 }
 
 export default function(options) {
     return async function(walk) {
-        walk("script[src]", "src", async (el, attr, asset) => {
+        walk("script[src]", "src", async ({element, attribute, asset}) => {
             let content = fs.readFileSync(asset, "utf-8").toString();
             if (options.minifyJs) {
                 let result = jsMinify(content, { sourceMap: options.sourceMap || false });
                 content = (await result).code;
             }
-            el.set_content(content);
-            el.removeAttribute(attr);
+            element.set_content(content);
+            element.removeAttribute(attribute);
         });
-        walk("link[href]", "href", async (el, attr, asset) => {
+        walk("link[href]", "href", async ({element, attribute, asset}) => {
             let result = walker(asset, [["css", cssWalker]]);
             if (options.minifyCss) {
                 result = result.then((val) => postcss([cssnanoPlugin]).process(val, { from: undefined })).then((val) => val.css);
             }
-            el.set_content(await result);
-            el.tagName = "style";
-            el.removeAttribute("rel");
-            el.removeAttribute(attr);
+            element.set_content(await result);
+            element.tagName = "style";
+            element.removeAttribute("rel");
+            element.removeAttribute(attribute);
         });
         walk("img[src]", "src", dataUrlWalker);
         walk("audio[src]", "src", dataUrlWalker);
