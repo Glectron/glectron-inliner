@@ -1,4 +1,4 @@
-import walk from "glectron-asset-walker";
+import walk from "@glectron/asset-walker";
 
 import htmlWalker from "./inliners/html.js";
 

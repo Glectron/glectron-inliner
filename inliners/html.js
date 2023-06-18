@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import walker from "glectron-asset-walker";
+import walker from "@glectron/asset-walker";
 import { minify as jsMinify } from "terser";
 import postcss from "postcss";
 import cssnanoPlugin from "cssnano";
