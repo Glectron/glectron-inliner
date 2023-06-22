@@ -1,6 +1,6 @@
 {
   "name": "@glectron/inliner",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A HTML packer that inlines all used assets",
   "main": "index.js",
   "type": "module",
