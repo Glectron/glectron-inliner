@@ -12,7 +12,7 @@
     "glectron-inliner": "./cli.js"
   },
   "dependencies": {
-    "@glectron/asset-walker": "^1.0.0",
+    "@glectron/asset-walker": "^1.0.1",
     "cssnano": "^6.0.1",
     "mime-types": "^2.1.35",
     "minimist": "^1.2.8",

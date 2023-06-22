@@ -20,11 +20,11 @@ export default function(options) {
     return async function(walk) {
         walk("script[src]", "src", async ({element, attribute, asset}) => {
             let content = fs.readFileSync(asset, "utf-8").toString();
-            if (options.minifyJs) {
+            if (options?.minifyJs) {
                 let result = jsMinify(content, { sourceMap: options.sourceMap || false });
                 content = (await result).code;
             }
-            element.set_content(content);
+            element.textContent = content;
             element.removeAttribute(attribute);
         });
         walk("link[href]", "href", async ({element, attribute, asset}) => {
@@ -32,7 +32,7 @@ export default function(options) {
             if (options.minifyCss) {
                 result = result.then((val) => postcss([cssnanoPlugin]).process(val, { from: undefined })).then((val) => val.css);
             }
-            element.set_content(await result);
+            element.textContent = await result;
             element.tagName = "style";
             element.removeAttribute("rel");
             element.removeAttribute(attribute);
