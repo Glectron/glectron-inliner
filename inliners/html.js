@@ -29,7 +29,7 @@ export default function(options) {
         });
         walk("link[href]", "href", async ({element, attribute, asset}) => {
             let result = walker(asset, [["css", cssWalker]]);
-            if (options.minifyCss) {
+            if (options?.minifyCss) {
                 result = result.then((val) => postcss([cssnanoPlugin]).process(val, { from: undefined })).then((val) => val.css);
             }
             element.textContent = await result;
